@@ -4,6 +4,7 @@ export const actionTypes = {
   REQUEST_START: "REQUEST_START",
   REQUEST_SUCCESS: "REQUEST_SUCCESS",
   REQUEST_ERROR: "REQUEST_ERROR",
+  STORE_POSTS: "STORE_POSTS",
   ADD_POST: "ADD_POST"
 };
 
@@ -32,12 +33,13 @@ export const fetchData = () => async dispatch => {
     })
     .catch(({ message }) => dispatch(requestError(message)));
 };
+
 export const newData = body => async dispatch => {
   dispatch(requestStart());
+  console.log(body);
   await axios
-    .post("https://simple-blog-api.crew.red/posts", {
-      headers: { "Content-Type": "application/json" },
-      data: { postId: `Date Now()`, body }
+    .post("https://simple-blog-api.crew.red/posts", body, {
+      headers: { "Content-Type": "application/json" }
     })
     .then(response => console.log(response))
     .catch(error => console.log(error));

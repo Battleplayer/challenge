@@ -10,6 +10,7 @@ import { newData, deleteData } from "../redux/actions/Action";
 
 class MainContainer extends Component {
   render() {
+    console.log(this.props.posts);
     return (
       <Fragment>
         <Switch>
@@ -35,10 +36,9 @@ class MainContainer extends Component {
     );
   }
 }
-const mapStateToProps = store => {
-  const posts = store.posts;
-  return posts;
-};
+const mapStateToProps = ({ posts }) => ({
+  ...posts
+});
 const mapDispatchToProps = dispatcher =>
   bindActionCreators(
     {

@@ -14,7 +14,8 @@ class LatestPostContainer extends Component {
     const styleDiv = {
       display: "flex",
       flexDirection: "row",
-      justifyContent: "space-around"
+      justifyContent: "space-around",
+      flexWrap: "wrap"
     };
     const styleLink = {
       flex: "0 0 30%"

@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { StyledForm, StyledButton, StyledInput } from "./StyledComponents";
+import { withRouter } from "react-router-dom";
+
+import axios from "axios";
 
 class NewPost extends Component {
-  onChangeAuthorValue = e => {
-    this.setState({ author: e.target.value });
-  };
-  onChangeTitleValue = e => {
-    this.setState({ title: e.target.value });
+  onInputChangeHandler = e => {
+    this.setState({ [e.target.name]: e.target.value });
   };
   onChangeFileValue = e => {
     if (e.target.files && e.target.files[0]) {
@@ -15,33 +15,39 @@ class NewPost extends Component {
       });
     }
   };
-  onChangeBodyValue = e => {
-    this.setState({ body: e.target.value });
-  };
   onChangeSetDate = () => {
     this.setState({ date: new Date().toLocaleDateString() });
   };
+  onFormSubmit = e => {
+    e.preventDefault();
+    this.onChangeSetDate();
+    setTimeout(() => {
+      // this.postDaata(this.state);
+      this.props.createNewPost(this.state);
+      // this.props.history.push("/");
+    }, 300);
+  };
+
+  postDaata = body => {
+    console.log(body);
+    axios
+      .post("https://simple-blog-api.crew.red/posts", body, {
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => console.log(response))
+      .catch(error => console.log(error));
+  };
+
   render() {
-    const { createNewPost } = this.props;
     return (
       <div>
-        <StyledForm
-          width={`400px`}
-          onSubmit={e => {
-            e.preventDefault();
-            this.onChangeSetDate();
-            setTimeout(() => {
-              console.log(this.state);
-              createNewPost(this.state);
-            }, 300);
-          }}
-        >
+        <StyledForm width={`400px`} onSubmit={this.onFormSubmit}>
           <label htmlFor="author">
             Enter author
             <StyledInput
               id="author"
               name="author"
-              onChange={this.onChangeAuthorValue}
+              onChange={this.onInputChangeHandler}
             />
           </label>
           <label htmlFor="title">
@@ -49,13 +55,14 @@ class NewPost extends Component {
             <StyledInput
               id="title"
               name="title"
-              onChange={this.onChangeTitleValue}
+              onChange={this.onInputChangeHandler}
             />
           </label>
           <label htmlFor="body">
             <textarea
+              name="body"
               id="body"
-              onChange={this.onChangeBodyValue}
+              onChange={this.onInputChangeHandler}
               style={{ width: "98%", height: "100px" }}
             />
           </label>
@@ -76,4 +83,4 @@ class NewPost extends Component {
   }
 }
 
-export default NewPost;
+export default withRouter(NewPost);
