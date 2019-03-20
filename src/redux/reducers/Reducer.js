@@ -3,7 +3,8 @@ import { actionTypes } from "../actions/Action";
 const defaultState = {
   isRequestInProgress: false,
   posts: [],
-  error: ""
+  error: "",
+  singlePost: {}
 };
 export default function(state = defaultState, { type = "", payload = {} }) {
   switch (type) {
@@ -17,6 +18,12 @@ export default function(state = defaultState, { type = "", payload = {} }) {
         ...state,
         isRequestInProgress: false,
         posts: payload.posts
+      };
+    case actionTypes.REQ_SINGLE_POST:
+      return {
+        ...state,
+        isRequestInProgress: false,
+        singlePost: payload.singlePost
       };
     case actionTypes.REQUEST_ERROR:
       return {

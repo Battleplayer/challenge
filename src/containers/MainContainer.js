@@ -6,7 +6,7 @@ import Post from "../components/Post";
 import NewPost from "../components/NewPost";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { newData, deleteData } from "../redux/actions/Action";
+import { newData, deleteData, fetchData } from "../redux/actions/Action";
 
 class MainContainer extends Component {
   render() {
@@ -18,19 +18,14 @@ class MainContainer extends Component {
           <Route
             exact
             path="/posts/:id"
-            render={() => (
-              <Post
-                isPreview=""
-                deletePost={deleteData}
-                postList={this.props.posts}
-              />
-            )}
+            render={() => <Post isPreview="" deletePost={deleteData} />}
           />
           <Route
             exact
             path="/new"
             render={() => <NewPost createNewPost={newData} />}
           />
+          <Route render={() => <h2> Page not found</h2>} />
         </Switch>
       </Fragment>
     );
@@ -43,7 +38,8 @@ const mapDispatchToProps = dispatcher =>
   bindActionCreators(
     {
       newData,
-      deleteData
+      deleteData,
+      fetchData
     },
     dispatcher
   );

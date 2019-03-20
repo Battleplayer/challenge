@@ -5,7 +5,8 @@ export const actionTypes = {
   REQUEST_SUCCESS: "REQUEST_SUCCESS",
   REQUEST_ERROR: "REQUEST_ERROR",
   STORE_POSTS: "STORE_POSTS",
-  ADD_POST: "ADD_POST"
+  ADD_POST: "ADD_POST",
+  REQ_SINGLE_POST: "REQ_SINGLE_POST"
 };
 
 export const requestStart = () => ({
@@ -15,6 +16,12 @@ export const requestSuccess = posts => ({
   type: actionTypes.REQUEST_SUCCESS,
   payload: {
     posts
+  }
+});
+export const requestSinglePost = singlePost => ({
+  type: actionTypes.REQ_SINGLE_POST,
+  payload: {
+    singlePost
   }
 });
 export const requestError = error => ({
@@ -30,6 +37,15 @@ export const fetchData = () => async dispatch => {
     .get("https://simple-blog-api.crew.red/posts")
     .then(({ data }) => {
       dispatch(requestSuccess(data));
+    })
+    .catch(({ message }) => dispatch(requestError(message)));
+};
+export const fetchPost = id => async dispatch => {
+  dispatch(requestStart());
+  await axios
+    .get(`https://simple-blog-api.crew.red/posts/${id}`)
+    .then(({ data }) => {
+      dispatch(requestSinglePost(data));
     })
     .catch(({ message }) => dispatch(requestError(message)));
 };

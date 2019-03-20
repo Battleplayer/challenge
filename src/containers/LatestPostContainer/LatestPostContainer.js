@@ -39,8 +39,7 @@ class LatestPostContainer extends Component {
   }
 }
 
-const mapStateToProps = store => {
-  const posts = store.posts;
+const mapStateToProps = ({ posts }) => {
   return posts;
 };
 const mapDispatchToProps = dispatcher =>

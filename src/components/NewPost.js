@@ -8,13 +8,13 @@ class NewPost extends Component {
   onInputChangeHandler = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
-  onChangeFileValue = e => {
-    if (e.target.files && e.target.files[0]) {
-      this.setState({
-        image: URL.createObjectURL(e.target.files[0])
-      });
-    }
-  };
+  // onChangeFileValue = e => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     this.setState({
+  //       image: URL.createObjectURL(e.target.files[0])
+  //     });
+  //   }
+  // };
   onChangeSetDate = () => {
     this.setState({ date: new Date().toLocaleDateString() });
   };
@@ -22,8 +22,8 @@ class NewPost extends Component {
     e.preventDefault();
     this.onChangeSetDate();
     setTimeout(() => {
-      // this.postDaata(this.state);
-      this.props.createNewPost(this.state);
+      this.postDaata(this.state);
+      // this.props.createNewPost(this.state);
       // this.props.history.push("/");
     }, 300);
   };
@@ -70,10 +70,10 @@ class NewPost extends Component {
             Add file
             <input
               accept="image/*"
-              type="file"
+              type="text"
               id="image"
               name="image"
-              onChange={this.onChangeFileValue}
+              onChange={this.onInputChangeHandler}
             />
           </label>
           <StyledButton> Create </StyledButton>
