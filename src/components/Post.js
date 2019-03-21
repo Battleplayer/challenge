@@ -3,7 +3,7 @@ import { StyledCard, StyledButton } from "./StyledComponents";
 import Comments from "./Comments";
 
 import { withRouter } from "react-router-dom";
-import { fetchPost } from "../redux/actions/Action";
+import { fetchPost, postComment } from "../redux/actions/Action";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
@@ -11,16 +11,19 @@ class Post extends Component {
   componentDidMount() {
     if (!this.props.isPreview) this.props.fetchPost(this.props.match.params.id);
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isRequestInProgress !== this.props.isRequestInProgress) {
+      this.props.fetchPost(this.props.match.params.id);
+    }
+  }
+
   deleteThisPost = () => {
     this.props.deletePost(this.props.match.params.id);
     this.props.history.push("/");
   };
   render() {
     const { isPreview, post, singlePost } = this.props;
-    let soloPost;
-    if (!isPreview) soloPost = singlePost;
-    else soloPost = post;
-
+    let soloPost = !isPreview ? singlePost : post;
     return (
       <StyledCard className="post" isPreview={isPreview}>
         {isPreview ? (
@@ -39,7 +42,23 @@ class Post extends Component {
                   <span>{soloPost.author}</span> &nbsp;
                   <span>{soloPost.date}</span>
                 </p>
-                <Comments />
+                {soloPost.comments && soloPost.comments.length ? (
+                  <Fragment>
+                    <h3>Topic's comments:</h3>
+                    <ul>
+                      {soloPost.comments &&
+                        soloPost.comments.map(comm => (
+                          <li key={comm.id}>{comm.body}</li>
+                        ))}
+                    </ul>
+                  </Fragment>
+                ) : (
+                  "Its quit here, be the first to comment!"
+                )}
+                <Comments
+                  postComment={postComment}
+                  id={this.props.match.params.id}
+                />
                 <StyledButton onClick={this.props.history.goBack}>
                   Return
                 </StyledButton>
@@ -61,7 +80,8 @@ const mapStateToProps = ({ posts }) => ({
 const mapDispatchToProps = dispatcher =>
   bindActionCreators(
     {
-      fetchPost
+      fetchPost,
+      postComment
     },
     dispatcher
   );
