@@ -60,7 +60,7 @@ export const newData = body => async dispatch => {
     .then(response => console.log(response))
     .catch(error => console.log(error));
 };
-export const deleteData = id => {
+export const deletePost = id => {
   axios
     .delete(`https://simple-blog-api.crew.red/posts/${id}`)
     .then(response => console.log(response))

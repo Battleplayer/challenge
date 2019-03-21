@@ -1,20 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default () => {
+const Header = () => {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-around"
-      }}
-    >
+    <nav className="headerNav">
       <h1>
         <Link to="/"> Home</Link>
       </h1>
       <Link to="/new">Create new post</Link>
-    </div>
+    </nav>
   );
 };
+export default Header;

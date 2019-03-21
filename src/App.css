@@ -2,3 +2,18 @@ img{
   max-width: 100%;
   height: 200px;
 }
+.headerNav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+.postsList {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+.postsList a {
+    flex: 0 0 30%
+}

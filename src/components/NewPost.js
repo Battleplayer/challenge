@@ -5,30 +5,26 @@ import { withRouter } from "react-router-dom";
 import axios from "axios";
 
 class NewPost extends Component {
-  onInputChangeHandler = e => {
+  state = {
+    author: "",
+    title: "",
+    body: "",
+    image: ""
+  };
+
+  onInputChangeHandler = e =>
     this.setState({ [e.target.name]: e.target.value });
-  };
-  // onChangeFileValue = e => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     this.setState({
-  //       image: URL.createObjectURL(e.target.files[0])
-  //     });
-  //   }
-  // };
-  onChangeSetDate = () => {
-    this.setState({ date: new Date().toLocaleDateString() });
-  };
+
   onFormSubmit = e => {
     e.preventDefault();
-    this.onChangeSetDate();
+    this.setState({ date: new Date().toLocaleDateString() });
     setTimeout(() => {
-      this.postDaata(this.state);
-      // this.props.createNewPost(this.state);
-      // this.props.history.push("/");
+      this.submitNewPost(this.state);
+      this.props.history.push("/");
     }, 300);
   };
 
-  postDaata = body => {
+  submitNewPost = body => {
     console.log(body);
     axios
       .post("https://simple-blog-api.crew.red/posts", body, {
@@ -47,6 +43,7 @@ class NewPost extends Component {
             <StyledInput
               id="author"
               name="author"
+              value={this.state.author}
               onChange={this.onInputChangeHandler}
             />
           </label>
@@ -55,24 +52,28 @@ class NewPost extends Component {
             <StyledInput
               id="title"
               name="title"
+              value={this.state.title}
               onChange={this.onInputChangeHandler}
             />
           </label>
           <label htmlFor="body">
+            Enter more text!
             <textarea
               name="body"
               id="body"
+              value={this.state.body}
               onChange={this.onInputChangeHandler}
               style={{ width: "98%", height: "100px" }}
             />
           </label>
           <label htmlFor="image">
-            Add file
-            <input
-              accept="image/*"
+            Add image link
+            <StyledInput
+              //  accept="image/*"
               type="text"
               id="image"
               name="image"
+              value={this.state.image}
               onChange={this.onInputChangeHandler}
             />
           </label>

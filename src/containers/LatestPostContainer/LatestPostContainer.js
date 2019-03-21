@@ -11,26 +11,12 @@ class LatestPostContainer extends Component {
   }
 
   render() {
-    const styleDiv = {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "space-around",
-      flexWrap: "wrap"
-    };
-    const styleLink = {
-      flex: "0 0 30%"
-    };
     const { posts } = this.props;
     return (
-      <div style={styleDiv}>
+      <div className="postsList">
         {posts &&
           posts.map(post => (
-            <Link
-              style={styleLink}
-              key={post.id}
-              exact="true"
-              to={`/posts/${post.id}`}
-            >
+            <Link key={post.id} exact="true" to={`/posts/${post.id}`}>
               <Post isPreview="1" post={post} />
             </Link>
           ))}
@@ -39,9 +25,9 @@ class LatestPostContainer extends Component {
   }
 }
 
-const mapStateToProps = ({ posts }) => {
-  return posts;
-};
+const mapStateToProps = ({ posts }) => ({
+  ...posts
+});
 const mapDispatchToProps = dispatcher =>
   bindActionCreators(
     {
