@@ -9,10 +9,16 @@ import { connect } from "react-redux";
 
 class Post extends Component {
   componentDidMount() {
-    if (!this.props.isPreview) this.props.fetchPost(this.props.match.params.id);
+    if (!this.props.isPreview && this.props.match.params.id)
+      this.props.fetchPost(this.props.match.params.id);
   }
+
   componentWillReceiveProps(nextProps) {
-    if (nextProps.isRequestInProgress !== this.props.isRequestInProgress) {
+    if (
+      nextProps.isRequestInProgress !== this.props.isRequestInProgress &&
+      // nextProps.singlePost.comments !== this.props.singlePost.comments &&
+      !this.props.isPreview
+    ) {
       this.props.fetchPost(this.props.match.params.id);
     }
   }
@@ -21,6 +27,7 @@ class Post extends Component {
     this.props.deletePost(this.props.match.params.id);
     this.props.history.push("/");
   };
+
   render() {
     const { isPreview, post, singlePost } = this.props;
     let soloPost = !isPreview ? singlePost : post;

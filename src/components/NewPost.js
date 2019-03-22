@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { StyledForm, StyledButton, StyledInput } from "./StyledComponents";
 import { withRouter } from "react-router-dom";
+import { Prompt } from "react-router-dom";
 
+import { fetchPost, createNewPost, editPost } from "../redux/actions/Action";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import axios from "axios";
 
 class NewPost extends Component {
@@ -11,21 +15,33 @@ class NewPost extends Component {
     body: "",
     image: ""
   };
+  isTextEdited = false;
 
-  onInputChangeHandler = e =>
+  componentDidMount() {
+    if (this.props.isEdit) {
+      this.props.fetchPost(this.props.match.params.id);
+      this.setState(this.props.singlePost);
+    }
+  }
+
+  onInputChangeHandler = e => {
     this.setState({ [e.target.name]: e.target.value });
+    this.isTextEdited = true;
+  };
 
   onFormSubmit = e => {
     e.preventDefault();
     this.setState({ date: new Date().toLocaleDateString() });
+    this.isTextEdited = false;
     setTimeout(() => {
-      this.submitNewPost(this.state);
+      if (!this.props.isEdit) {
+        this.submitNewPost(this.state);
+      } else this.editPost(this.state, this.props.match.params.id);
       this.props.history.push("/");
     }, 300);
   };
 
   submitNewPost = body => {
-    console.log(body);
     axios
       .post("https://simple-blog-api.crew.red/posts", body, {
         headers: { "Content-Type": "application/json" }
@@ -33,17 +49,31 @@ class NewPost extends Component {
       .then(response => console.log(response))
       .catch(error => console.log(error));
   };
+  editPost = (body, id) => {
+    axios
+      .put(`https://simple-blog-api.crew.red/posts/${id}`, body, {
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => console.log(response))
+      .catch(error => console.log(error));
+  };
 
   render() {
+    console.log(this.isTextEdited);
+    const { author, title, body, image } = this.state;
     return (
       <div>
+        <Prompt
+          when={this.isTextEdited}
+          message={() => `You didn't store changes, really leave?`}
+        />
         <StyledForm width={`400px`} onSubmit={this.onFormSubmit}>
           <label htmlFor="author">
             Enter author
             <StyledInput
               id="author"
               name="author"
-              value={this.state.author}
+              value={author}
               onChange={this.onInputChangeHandler}
             />
           </label>
@@ -52,7 +82,7 @@ class NewPost extends Component {
             <StyledInput
               id="title"
               name="title"
-              value={this.state.title}
+              value={title}
               onChange={this.onInputChangeHandler}
             />
           </label>
@@ -61,7 +91,7 @@ class NewPost extends Component {
             <textarea
               name="body"
               id="body"
-              value={this.state.body}
+              value={body}
               onChange={this.onInputChangeHandler}
               style={{ width: "98%", height: "100px" }}
             />
@@ -69,19 +99,41 @@ class NewPost extends Component {
           <label htmlFor="image">
             Add image link
             <StyledInput
-              //  accept="image/*"
               type="text"
               id="image"
               name="image"
-              value={this.state.image}
+              value={image}
               onChange={this.onInputChangeHandler}
             />
           </label>
-          <StyledButton> Create </StyledButton>
+          <StyledButton type="submit" color={`green`}>
+            {this.props.isEdit ? "Edit" : "Create"}
+          </StyledButton>
+          <StyledButton type="button" onClick={this.props.history.goBack}>
+            Return
+          </StyledButton>
         </StyledForm>
       </div>
     );
   }
 }
 
-export default withRouter(NewPost);
+const mapStateToProps = ({ posts }) => ({
+  ...posts
+});
+const mapDispatchToProps = dispatcher =>
+  bindActionCreators(
+    {
+      fetchPost,
+      createNewPost,
+      editPost
+    },
+    dispatcher
+  );
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(NewPost)
+);

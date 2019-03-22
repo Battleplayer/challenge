@@ -56,11 +56,21 @@ export const postComment = body => async dispatch => {
     .then(response => console.log(response))
     .catch(error => console.log(error));
 };
-
-export const newData = body => async dispatch => {
+// not used
+export const createNewPost = body => async dispatch => {
   dispatch(requestStart());
   await axios
     .post("https://simple-blog-api.crew.red/posts", body, {
+      headers: { "Content-Type": "application/json" }
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log(error));
+};
+//not used
+export const editPost = (body, id) => async dispatch => {
+  dispatch(requestStart());
+  await axios
+    .post(`https://simple-blog-api.crew.red/posts/${id}`, body, {
       headers: { "Content-Type": "application/json" }
     })
     .then(response => console.log(response))
