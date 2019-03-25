@@ -10,6 +10,7 @@ class Comments extends Component {
   onEnterCommentHandler = e =>
     this.setState({ [e.target.name]: e.target.value });
   postComment = () => {
+    this.props.commentAdded();
     let body = { postId: parseInt(this.props.id), body: this.state.comment };
     axios
       .post("https://simple-blog-api.crew.red/comments", body, {

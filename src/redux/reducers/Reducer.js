@@ -6,7 +6,7 @@ const defaultState = {
   error: "",
   singlePost: {}
 };
-export default function(state = defaultState, { type = "", payload = {} }) {
+const reducer = (state = defaultState, { type = "", payload = {} }) => {
   switch (type) {
     case actionTypes.REQUEST_START:
       return {
@@ -35,4 +35,5 @@ export default function(state = defaultState, { type = "", payload = {} }) {
     default:
       return state;
   }
-}
+};
+export default reducer;

@@ -8,20 +8,29 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 class Post extends Component {
+  state = {
+    isCommentAdded: false
+  };
+
   componentDidMount() {
     if (!this.props.isPreview && this.props.match.params.id)
       this.props.fetchPost(this.props.match.params.id);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.isRequestInProgress !== this.props.isRequestInProgress &&
-      // nextProps.singlePost.comments !== this.props.singlePost.comments &&
-      !this.props.isPreview
-    ) {
-      this.props.fetchPost(this.props.match.params.id);
-    }
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log(`this = ${this.state.isCommentAdded}`);
+  //   console.log(`prev = ${nextState.isCommentAdded}`);
+  //   if (nextState.isCommentAdded === true) {
+  //     this.props.fetchPost(this.props.match.params.id);
+  //     this.setState({ isCommentAdded: false });
+  //     return true;
+  //   }
+  //   // this.setState({ isCommentAdded: false });
+  //   return false;
+  // }
+  commentAdded = () => {
+    this.setState({ isCommentAdded: true });
+  };
 
   deleteThisPost = () => {
     this.props.deletePost(this.props.match.params.id);
@@ -63,6 +72,7 @@ class Post extends Component {
                   "Its quit here, be the first to comment!"
                 )}
                 <Comments
+                  commentAdded={this.commentAdded}
                   postComment={postComment}
                   id={this.props.match.params.id}
                 />

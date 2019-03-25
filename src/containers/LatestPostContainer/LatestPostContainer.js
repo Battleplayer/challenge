@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Post from "../../components/Post";
+import Loading from "../../components/Loading";
 import { connect } from "react-redux";
 import { fetchData } from "../../redux/actions/Action";
 import { bindActionCreators } from "redux";
@@ -12,6 +13,9 @@ class LatestPostContainer extends Component {
 
   render() {
     const { posts } = this.props;
+    if (!posts.length) {
+      return <Loading />;
+    }
     return (
       <div className="postsList">
         {posts &&
@@ -37,13 +41,14 @@ class LatestPostContainer extends Component {
 const mapStateToProps = ({ posts }) => ({
   ...posts
 });
-const mapDispatchToProps = dispatcher =>
+const mapDispatchToProps = dispatcher => {
   bindActionCreators(
     {
       fetchData
     },
     dispatcher
   );
+};
 
 export default withRouter(
   connect(

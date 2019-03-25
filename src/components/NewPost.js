@@ -33,12 +33,12 @@ class NewPost extends Component {
     e.preventDefault();
     this.setState({ date: new Date().toLocaleDateString() });
     this.isTextEdited = false;
-    setTimeout(() => {
-      if (!this.props.isEdit) {
-        this.submitNewPost(this.state);
-      } else this.editPost(this.state, this.props.match.params.id);
-      this.props.history.push("/");
-    }, 300);
+    // setTimeout(() => {
+    if (!this.props.isEdit) {
+      this.submitNewPost(this.state);
+    } else this.editPost(this.state, this.props.match.params.id);
+    this.props.history.push("/");
+    // }, 300);
   };
 
   submitNewPost = body => {
