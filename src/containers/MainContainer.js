@@ -9,45 +9,42 @@ import { bindActionCreators } from "redux";
 import { deletePost, fetchData } from "../redux/actions/Action";
 
 class MainContainer extends Component {
-  render() {
-    console.log(this.props);
-    return (
-      <Fragment>
-        <Switch>
-          <Route exact path="/" component={LatestPostContainer} />
-          <Route
-            exact
-            path="/posts/:id"
-            render={() => <Post isPreview="" deletePost={deletePost} />}
-          />
-          <Route
-            exact
-            path="/edit/:id"
-            isEdit="1"
-            render={() => <NewPost isEdit="1" />}
-          />
-          <Route exact path="/new" render={() => <NewPost />} />
-          <Route render={() => <h2> Page not found</h2>} />
-        </Switch>
-      </Fragment>
-    );
-  }
+	componentDidMount() {
+		if (this.props.fetchData) {
+			this.props.fetchData();
+			console.log("load");
+		}
+	}
+	render() {
+		// console.log(this.props);
+		return (
+			<Fragment>
+				<Switch>
+					<Route exact path="/" component={LatestPostContainer} fetchData={fetchData} posts={this.props.posts} />
+					<Route exact path="/posts/:id" render={() => <Post isPreview="" deletePost={deletePost} />} />
+					<Route exact path="/edit/:id" isEdit="1" render={() => <NewPost isEdit="1" />} />
+					<Route exact path="/new" render={() => <NewPost />} />
+					<Route render={() => <h2> Page not found</h2>} />
+				</Switch>
+			</Fragment>
+		);
+	}
 }
 const mapStateToProps = ({ posts }) => ({
-  ...posts
+	posts,
 });
 const mapDispatchToProps = dispatcher =>
-  bindActionCreators(
-    {
-      deletePost,
-      fetchData
-    },
-    dispatcher
-  );
+	bindActionCreators(
+		{
+			deletePost,
+			fetchData,
+		},
+		dispatcher
+	);
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MainContainer)
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(MainContainer)
 );
