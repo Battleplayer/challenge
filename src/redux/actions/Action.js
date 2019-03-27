@@ -5,6 +5,9 @@ export const actionTypes = {
 	REQUEST_SUCCESS: "REQUEST_SUCCESS",
 	REQUEST_ERROR: "REQUEST_ERROR",
 	REQ_SINGLE_POST: "REQ_SINGLE_POST",
+	CREATE_NEW_POST: "CREATE_NEW_POST",
+	EDIT_EXISTED_POST: "EDIT_EXISTED_POST",
+	ADD_COMMENT: "ADD_COMMENT",
 };
 
 export const requestStart = () => ({
@@ -28,6 +31,24 @@ export const requestError = error => ({
 		error,
 	},
 });
+export const createPost = post => ({
+	type: actionTypes.CREATE_NEW_POST,
+	payload: {
+		post,
+	},
+});
+export const editExistedPost = post => ({
+	type: actionTypes.EDIT_EXISTED_POST,
+	payload: {
+		post,
+	},
+});
+export const addComment = singlePost => ({
+	type: actionTypes.ADD_COMMENT,
+	payload: {
+		singlePost,
+	},
+});
 
 export const fetchData = () => async dispatch => {
 	dispatch(requestStart());
@@ -48,7 +69,7 @@ export const fetchPost = id => async dispatch => {
 		.catch(({ message }) => dispatch(requestError(message)));
 };
 export const postComment = body => async dispatch => {
-	dispatch(requestStart());
+	dispatch(addComment());
 	await axios
 		.post(`https://simple-blog-api.crew.red/comments`, body, {
 			headers: { "Content-Type": "application/json" },
@@ -56,9 +77,9 @@ export const postComment = body => async dispatch => {
 		.then(response => console.log(response))
 		.catch(error => console.log(error));
 };
-// not used
+
 export const createNewPost = body => async dispatch => {
-	dispatch(requestStart());
+	dispatch(createPost());
 	await axios
 		.post("https://simple-blog-api.crew.red/posts", body, {
 			headers: { "Content-Type": "application/json" },
@@ -66,11 +87,11 @@ export const createNewPost = body => async dispatch => {
 		.then(response => console.log(response))
 		.catch(error => console.log(error));
 };
-// not used
+
 export const editPost = (body, id) => async dispatch => {
-	dispatch(requestStart());
+	dispatch(editExistedPost());
 	await axios
-		.post(`https://simple-blog-api.crew.red/posts/${id}`, body, {
+		.put(`https://simple-blog-api.crew.red/posts/${id}`, body, {
 			headers: { "Content-Type": "application/json" },
 		})
 		.then(response => console.log(response))

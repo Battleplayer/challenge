@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter, Prompt } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import axios from "axios";
 
 import { fetchPost, createNewPost, editPost } from "../redux/actions/Action";
 import { StyledForm, StyledButton, StyledInput } from "./StyledComponents";
@@ -19,9 +18,8 @@ class NewPost extends Component {
 
 	componentDidMount() {
 		const { isEdit, fetchPost, match, singlePost } = this.props;
-		if (isEdit) {
+		if (isEdit === "true") {
 			fetchPost(match.params.id);
-			console.log(singlePost);
 			this.setState(singlePost);
 		}
 	}
@@ -32,38 +30,20 @@ class NewPost extends Component {
 	};
 
 	onFormSubmit = e => {
-		const { isEdit, match, history } = this.props;
+		const { isEdit, match, createNewPost, editPost } = this.props;
 		e.preventDefault();
 		this.setState({ date: new Date().toLocaleDateString() });
 		this.isTextEdited = false;
 		setTimeout(() => {
 			if (!isEdit) {
-				this.submitNewPost(this.state);
-			} else this.editPost(this.state, match.params.id);
-			// history.push("/");
+				createNewPost(this.state);
+			} else editPost(this.state, match.params.id);
+			// history.goBack;
 		}, 300);
 	};
 
-	submitNewPost = body => {
-		axios
-			.post("https://simple-blog-api.crew.red/posts", body, {
-				headers: { "Content-Type": "application/json" },
-			})
-			.then(response => console.log(response))
-			.catch(error => console.log(error));
-	};
-
-	editPost = (body, id) => {
-		axios
-			.put(`https://simple-blog-api.crew.red/posts/${id}`, body, {
-				headers: { "Content-Type": "application/json" },
-			})
-			.then(response => console.log(response))
-			.catch(error => console.log(error));
-	};
-
 	render() {
-		console.log(this.props);
+		// console.log(this.props);
 		const { author, title, body, image } = this.state;
 		return (
 			<div>
@@ -91,7 +71,7 @@ class NewPost extends Component {
 						Add image link
 						<StyledInput type="text" id="image" name="image" value={image} onChange={this.onInputChangeHandler} />
 					</label>
-					<StyledButton type="submit" color={`green`}>
+					<StyledButton type="submit" color="green">
 						{this.props.isEdit ? "Edit" : "Create"}
 					</StyledButton>
 					<StyledButton type="button" onClick={this.props.history.goBack}>

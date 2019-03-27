@@ -8,14 +8,11 @@ import Loading from "../../components/Loading";
 
 class LatestPostContainer extends Component {
 	componentDidMount() {
-		if (this.props.fetchData) {
-			this.props.fetchData();
-			console.log("load");
-		}
+		this.props.fetchData();
 	}
 
 	render() {
-		console.log(this.props);
+		// console.log(this.props);
 		const { posts } = this.props;
 		if (!posts) {
 			return <Loading />;

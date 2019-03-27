@@ -31,6 +31,21 @@ const reducer = (state = defaultState, { type = "", payload = {} }) => {
 				isRequestInProgress: false,
 				error: payload.error,
 			};
+		case actionTypes.CREATE_NEW_POST:
+			return {
+				...state,
+				posts: [...state.posts, payload.post],
+			};
+		case actionTypes.EDIT_EXISTED_POST:
+			return {
+				...state,
+				posts: { ...state.posts, ...payload },
+			};
+		case actionTypes.ADD_COMMENT:
+			return {
+				...state,
+				payload,
+			};
 
 		default:
 			return state;

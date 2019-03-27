@@ -19,13 +19,12 @@ class Post extends Component {
 	// shouldComponentUpdate(nextProps, nextState) {
 	// 	const { match, fetchPost } = this.props;
 	// 	if (nextState.isCommentAdded !== this.state.isCommentAdded) {
-	// 		fetchPost(match.params.id);
 	// 		this.setState({ isCommentAdded: false });
 	// 		return true;
 	// 	}
+	//
 	// 	return false;
 	// }
-
 
 	commentAdded = () => {
 		this.setState({ isCommentAdded: true });
@@ -34,9 +33,8 @@ class Post extends Component {
 	deleteThisPost = () => {
 		const { deletePost, match, history } = this.props;
 		deletePost(match.params.id);
-		setTimeout(()=> history.push("/"), 500);
+		setTimeout(() => history.push("/"), 500);
 	};
-
 
 	render() {
 		const { isPreview, post, singlePost, match, history } = this.props;
@@ -45,7 +43,6 @@ class Post extends Component {
 		console.log(soloPost);
 
 		return (
-
 			<StyledCard className="post" isPreview={isPreview}>
 				{isPreview ? (
 					<Fragment>
@@ -66,14 +63,19 @@ class Post extends Component {
 								{soloPost.comments && soloPost.comments.length ? (
 									<Fragment>
 										<h3>Topic&apos;s comments:</h3>
-										<ul>{soloPost.comments && soloPost.comments.map(comm =>
-											<li key={comm.id}>{comm.body.comment} - says &quot; {comm.body.author}&quot;</li>)}
+										<ul>
+											{soloPost.comments &&
+												soloPost.comments.map(comm => (
+													<li key={comm.id}>
+														{comm.body.comment} - says &quot;{comm.body.author}&quot;
+													</li>
+												))}
 										</ul>
 									</Fragment>
 								) : (
 									"Its quit here, be the first to comment!"
 								)}
-								<Comments commentAdded={this.commentAdded} postComment={postComment} id={match.params.id} />
+								<Comments commentAdded={this.commentAdded} postComment={this.props.postComment} id={match.params.id} />
 								<StyledButton onClick={history.goBack}>Return</StyledButton>
 								<StyledButton color="red" onClick={this.deleteThisPost}>
 									Delete
@@ -96,12 +98,12 @@ const mapDispatchToProps = dispatcher =>
 			fetchPost,
 			postComment,
 		},
-		dispatcher,
+		dispatcher
 	);
 
 export default withRouter(
 	connect(
 		mapStateToProps,
-		mapDispatchToProps,
-	)(Post),
+		mapDispatchToProps
+	)(Post)
 );
