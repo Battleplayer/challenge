@@ -17,10 +17,15 @@ class NewPost extends Component {
 	isTextEdited = false;
 
 	componentDidMount() {
-		const { isEdit, fetchPost, match, singlePost } = this.props;
+		const { isEdit, fetchPost, match } = this.props;
 		if (isEdit === "true") {
 			fetchPost(match.params.id);
-			this.setState(singlePost);
+		}
+	}
+
+	componentDidUpdate(prevProps) {
+		if (this.props.singlePost !== prevProps.singlePost) {
+			this.setState(this.props.singlePost);
 		}
 	}
 
@@ -30,7 +35,7 @@ class NewPost extends Component {
 	};
 
 	onFormSubmit = e => {
-		const { isEdit, match, createNewPost, editPost } = this.props;
+		const { isEdit, match, createNewPost, editPost, history } = this.props;
 		e.preventDefault();
 		this.setState({ date: new Date().toLocaleDateString() });
 		this.isTextEdited = false;
@@ -38,13 +43,14 @@ class NewPost extends Component {
 			if (!isEdit) {
 				createNewPost(this.state);
 			} else editPost(this.state, match.params.id);
-			// history.goBack;
+			history.push("/");
 		}, 300);
 	};
 
 	render() {
 		// console.log(this.props);
 		const { author, title, body, image } = this.state;
+		const { isEdit, history } = this.props;
 		return (
 			<div>
 				<Prompt when={this.isTextEdited} message={() => `You didn't store changes, really leave?`} />
@@ -72,9 +78,9 @@ class NewPost extends Component {
 						<StyledInput type="text" id="image" name="image" value={image} onChange={this.onInputChangeHandler} />
 					</label>
 					<StyledButton type="submit" color="green">
-						{this.props.isEdit ? "Edit" : "Create"}
+						{isEdit ? "Edit" : "Create"}
 					</StyledButton>
-					<StyledButton type="button" onClick={this.props.history.goBack}>
+					<StyledButton type="button" onClick={history.goBack}>
 						Return
 					</StyledButton>
 				</StyledForm>

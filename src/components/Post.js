@@ -25,6 +25,12 @@ class Post extends Component {
 	//
 	// 	return false;
 	// }
+	componentDidUpdate(prevProps, prevState) {
+		if (this.state.isCommentAdded !== prevState.isCommentAdded) {
+			this.props.fetchPost(this.props.match.params.id);
+			this.setState({ isCommentAdded: false });
+		}
+	}
 
 	commentAdded = () => {
 		this.setState({ isCommentAdded: true });
@@ -37,11 +43,9 @@ class Post extends Component {
 	};
 
 	render() {
+		console.log(this.props);
 		const { isPreview, post, singlePost, match, history } = this.props;
-
 		const soloPost = !isPreview ? singlePost : post;
-		console.log(soloPost);
-
 		return (
 			<StyledCard className="post" isPreview={isPreview}>
 				{isPreview ? (

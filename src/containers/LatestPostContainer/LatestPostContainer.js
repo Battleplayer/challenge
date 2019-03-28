@@ -19,17 +19,18 @@ class LatestPostContainer extends Component {
 		}
 		return (
 			<div className="postsList">
-				{posts &&
-					posts.map(post => (
-						<div className="postsList__item" key={post.id}>
-							<Link exact="true" to={`/posts/${post.id}`}>
-								<Post isPreview="1" post={post} />
-							</Link>
-							<Link className="postsList__edit" exact="true" to={`/edit/${post.id}`}>
-								Edit post
-							</Link>
-						</div>
-					))}
+				{posts && posts.length
+					? posts.map(post => (
+							<div className="postsList__item" key={post.id}>
+								<Link exact="true" to={`/posts/${post.id}`}>
+									<Post isPreview="1" post={post} />
+								</Link>
+								<Link className="postsList__edit" exact="true" to={`/edit/${post.id}`}>
+									Edit post
+								</Link>
+							</div>
+					  ))
+					: "nothing to load"}
 			</div>
 		);
 	}

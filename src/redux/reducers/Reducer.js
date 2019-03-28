@@ -19,18 +19,30 @@ const reducer = (state = defaultState, { type = "", payload = {} }) => {
 				isRequestInProgress: false,
 				posts: payload.posts,
 			};
-		case actionTypes.REQ_SINGLE_POST:
-			return {
-				...state,
-				isRequestInProgress: false,
-				singlePost: payload.singlePost,
-			};
 		case actionTypes.REQUEST_ERROR:
 			return {
 				...state,
 				isRequestInProgress: false,
 				error: payload.error,
 			};
+		case actionTypes.REQ_SINGLE_START:
+			return {
+				...state,
+				isRequestInProgress: false,
+			};
+		case actionTypes.REQ_SINGLE_SUCCESS:
+			return {
+				...state,
+				isRequestInProgress: false,
+				singlePost: payload.singlePost,
+			};
+		case actionTypes.REQ_SINGLE_ERROR:
+			return {
+				...state,
+				isRequestInProgress: false,
+				error: payload.error,
+			};
+
 		case actionTypes.CREATE_NEW_POST:
 			return {
 				...state,
