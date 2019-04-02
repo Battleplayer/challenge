@@ -4,12 +4,21 @@ export const actionTypes = {
 	REQUEST_START: "REQUEST_START",
 	REQUEST_SUCCESS: "REQUEST_SUCCESS",
 	REQUEST_ERROR: "REQUEST_ERROR",
-	REQ_SINGLE_START: "REQ_SINGLE_START",
-	REQ_SINGLE_SUCCESS: "REQ_SINGLE_SUCCESS",
-	REQ_SINGLE_ERROR: "REQ_SINGLE_ERROR",
-	CREATE_NEW_POST: "CREATE_NEW_POST",
-	EDIT_EXISTED_POST: "EDIT_EXISTED_POST",
-	ADD_COMMENT: "ADD_COMMENT",
+	SINGLE_POST_REQ_START: "SINGLE_POST_REQ_START",
+	SINGLE_POST_REQ_SUCCESS: "SINGLE_POST_REQ_SUCCESS",
+	SINGLE_POST_REQ_ERROR: "SINGLE_POST_REQ_ERROR",
+	CREATE_POST_REQ_START: "CREATE_POST_REQ_START",
+	CREATE_POST_REQ_SUCCESS: "CREATE_POST_REQ_SUCCESS",
+	CREATE_POST_REQ_ERROR: "CREATE_POST_REQ_ERROR",
+	EDIT_POST_REQ_START: "EDIT_POST_REQ_START",
+	EDIT_POST_REQ_SUCCESS: "EDIT_POST_REQ_SUCCESS",
+	EDIT_POST_REQ_ERROR: "EDIT_POST_REQ_ERROR",
+	DELETE_POST_REQ_START: "DELETE_POST_REQ_START",
+	DELETE_POST_REQ_SUCCESS: "DELETE_POST_REQ_SUCCESS",
+	DELETE_POST_REQ_ERROR: "DELETE_POST_REQ_ERROR",
+	ADD_COMMENT_REQ_START: "ADD_COMMENT_REQ_START",
+	ADD_COMMENT_REQ_SUCCESS: "ADD_COMMENT_REQ_SUCCESS",
+	ADD_COMMENT_REQ_ERROR: "ADD_COMMENT_REQ_ERROR",
 };
 // ALL POSTS
 export const requestStart = () => ({
@@ -30,42 +39,84 @@ export const requestError = error => ({
 
 // SINGLE POST REQ
 export const requestSinglePost = () => ({
-	type: actionTypes.REQ_SINGLE_START,
+	type: actionTypes.SINGLE_POST_REQ_START,
 });
 export const requestSinglePostSuccess = singlePost => ({
-	type: actionTypes.REQ_SINGLE_SUCCESS,
+	type: actionTypes.SINGLE_POST_REQ_SUCCESS,
 	payload: {
 		singlePost,
 	},
 });
-export const requestSinglePostError = singlePost => ({
-	type: actionTypes.REQ_SINGLE_SUCCESS,
+export const requestSinglePostError = error => ({
+	type: actionTypes.SINGLE_POST_REQ_ERROR,
 	payload: {
-		singlePost,
+		error,
 	},
 });
 
 // CREATE POST
-export const createPost = post => ({
-	type: actionTypes.CREATE_NEW_POST,
+export const requestCreatePost = () => ({
+	type: actionTypes.CREATE_POST_REQ_START,
+});
+export const requestCreatePostSuccess = post => ({
+	type: actionTypes.CREATE_POST_REQ_SUCCESS,
 	payload: {
 		post,
+	},
+});
+export const requestCreatePostError = error => ({
+	type: actionTypes.CREATE_POST_REQ_ERROR,
+	payload: {
+		error,
 	},
 });
 
 // EDIT POST
-export const editExistedPost = post => ({
-	type: actionTypes.EDIT_EXISTED_POST,
+export const requestEditPost = () => ({
+	type: actionTypes.EDIT_POST_REQ_START,
+});
+export const requestEditPostSuccess = payload => ({
+	type: actionTypes.EDIT_POST_REQ_SUCCESS,
+	payload,
+});
+export const requestEditPostError = error => ({
+	type: actionTypes.EDIT_POST_REQ_ERROR,
 	payload: {
-		post,
+		error,
 	},
 });
 
 // ADD COMMENT
-export const addComment = singlePost => ({
-	type: actionTypes.ADD_COMMENT,
+export const requestAddComment = () => ({
+	type: actionTypes.ADD_COMMENT_REQ_START,
+});
+export const requestAddCommentSuccess = comment => ({
+	type: actionTypes.ADD_COMMENT_REQ_SUCCESS,
 	payload: {
-		singlePost,
+		comment,
+	},
+});
+export const requestAddCommentError = error => ({
+	type: actionTypes.ADD_COMMENT_REQ_ERROR,
+	payload: {
+		error,
+	},
+});
+
+// DELETE POST
+export const requestDeletePost = () => ({
+	type: actionTypes.DELETE_POST_REQ_START,
+});
+export const requestDeletePostSuccess = id => ({
+	type: actionTypes.DELETE_POST_REQ_SUCCESS,
+	payload: {
+		id,
+	},
+});
+export const requestDeletePostError = error => ({
+	type: actionTypes.DELETE_POST_REQ_ERROR,
+	payload: {
+		error,
 	},
 });
 
@@ -88,37 +139,46 @@ export const fetchPost = id => async dispatch => {
 		.catch(({ message }) => dispatch(requestSinglePostError(message)));
 };
 export const postComment = body => async dispatch => {
-	dispatch(addComment());
+	dispatch(requestAddComment());
 	await axios
 		.post(`https://simple-blog-api.crew.red/comments`, body, {
 			headers: { "Content-Type": "application/json" },
 		})
-		.then(response => console.log(response))
-		.catch(error => console.log(error));
+		.then(({ data }) => {
+			dispatch(requestAddCommentSuccess(data));
+		})
+		.catch(({ message }) => dispatch(requestAddCommentError(message)));
 };
 
 export const createNewPost = body => async dispatch => {
-	dispatch(createPost());
+	dispatch(requestCreatePost());
 	await axios
 		.post("https://simple-blog-api.crew.red/posts", body, {
 			headers: { "Content-Type": "application/json" },
 		})
-		.then(response => console.log(response))
-		.catch(error => console.log(error));
+		.then(({ data }) => {
+			dispatch(requestCreatePostSuccess(data));
+		})
+		.catch(({ message }) => dispatch(requestCreatePostError(message)));
 };
 
 export const editPost = (body, id) => async dispatch => {
-	dispatch(editExistedPost());
+	dispatch(requestEditPost());
 	await axios
 		.put(`https://simple-blog-api.crew.red/posts/${id}`, body, {
 			headers: { "Content-Type": "application/json" },
 		})
-		.then(response => console.log(response))
-		.catch(error => console.log(error));
+		.then(({ data }) => {
+			dispatch(requestEditPostSuccess(data));
+		})
+		.catch(({ message }) => dispatch(requestEditPostError(message)));
 };
-export const deletePost = id => {
+export const deletePost = id => async dispatch => {
+	dispatch(requestDeletePost());
 	axios
 		.delete(`https://simple-blog-api.crew.red/posts/${id}`)
-		.then(response => console.log(response))
-		.catch(error => console.log(error));
+		.then(({ data }) => {
+			dispatch(requestDeletePostSuccess(data));
+		})
+		.catch(({ message }) => dispatch(requestDeletePostError(message)));
 };

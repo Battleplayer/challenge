@@ -10,9 +10,8 @@ class Comments extends Component {
 	onEnterCommentHandler = e => this.setState({ [e.target.name]: e.target.value });
 
 	postComment = () => {
-		const { commentAdded, id, postComment } = this.props;
+		const { id, postComment } = this.props;
 		const { comment, author } = this.state;
-		commentAdded();
 		const body = { postId: parseInt(id, 0), body: { comment, author } };
 		postComment(body);
 		this.setState({ comment: "" });

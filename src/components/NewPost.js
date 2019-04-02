@@ -11,21 +11,31 @@ class NewPost extends Component {
 		author: "",
 		title: "",
 		body: "",
-		image: "",
+		image: "https://via.placeholder.com/250/000000/FFFFFF/?text=no text",
+		date: new Date().toLocaleString(),
 	};
 
 	isTextEdited = false;
 
 	componentDidMount() {
 		const { isEdit, fetchPost, match } = this.props;
-		if (isEdit === "true") {
+		if (isEdit) {
 			fetchPost(match.params.id);
 		}
 	}
 
 	componentDidUpdate(prevProps) {
-		if (this.props.singlePost !== prevProps.singlePost) {
-			this.setState(this.props.singlePost);
+		const { history, postEdited, singlePost, postCreated } = this.props;
+		if (singlePost !== prevProps.singlePost) {
+			this.setState(singlePost);
+		}
+		if (postEdited) {
+			console.log("Post has been Edited");
+			history.push("/");
+		}
+		if (postCreated) {
+			console.log("Post has been Created");
+			history.push("/");
 		}
 	}
 
@@ -35,20 +45,13 @@ class NewPost extends Component {
 	};
 
 	onFormSubmit = e => {
-		const { isEdit, match, createNewPost, editPost, history } = this.props;
+		const { isEdit, match, createNewPost, editPost } = this.props;
 		e.preventDefault();
-		this.setState({ date: new Date().toLocaleDateString() });
 		this.isTextEdited = false;
-		setTimeout(() => {
-			if (!isEdit) {
-				createNewPost(this.state);
-			} else editPost(this.state, match.params.id);
-			history.push("/");
-		}, 300);
+		!isEdit ? createNewPost(this.state) : editPost(this.state, match.params.id);
 	};
 
 	render() {
-		// console.log(this.props);
 		const { author, title, body, image } = this.state;
 		const { isEdit, history } = this.props;
 		return (
@@ -89,8 +92,10 @@ class NewPost extends Component {
 	}
 }
 
-const mapStateToProps = ({ singlePost }) => ({
+const mapStateToProps = ({ singlePost, postEdited, postCreated }) => ({
 	singlePost,
+	postEdited,
+	postCreated,
 });
 const mapDispatchToProps = dispatcher =>
 	bindActionCreators(

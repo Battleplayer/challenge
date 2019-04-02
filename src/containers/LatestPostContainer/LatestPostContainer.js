@@ -11,8 +11,13 @@ class LatestPostContainer extends Component {
 		this.props.fetchData();
 	}
 
+	componentDidUpdate() {
+		if (this.props.postEdited) {
+			this.props.fetchData();
+		}
+	}
+
 	render() {
-		// console.log(this.props);
 		const { posts } = this.props;
 		if (!posts) {
 			return <Loading />;
@@ -30,14 +35,15 @@ class LatestPostContainer extends Component {
 								</Link>
 							</div>
 					  ))
-					: "nothing to load"}
+					: "Nothing to load"}
 			</div>
 		);
 	}
 }
 
-const mapStateToProps = ({ posts }) => ({
+const mapStateToProps = ({ posts, postEdited }) => ({
 	posts,
+	postEdited,
 });
 const mapDispatchToProps = dispatcher =>
 	bindActionCreators(
