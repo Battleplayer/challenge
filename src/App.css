@@ -2,3 +2,96 @@ img{
   max-width: 100%;
   height: 200px;
 }
+.headerNav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+.postsList {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.postsList__item {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 30%;
+}
+.postsList__edit {
+    display: block;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    background-color: transparent;
+    color: grey;
+    border-radius: 6px;
+    border: 2px solid grey;
+    transition: all 300ms ease;
+    margin-top: 20px;
+    text-align: center;
+    text-decoration: none;
+}
+.postsList__edit:hover {
+    background-color: grey;
+    color: white;
+    border-color: grey;
+}
+
+.spinner {
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    font-size: 10px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.spinner > div {
+    margin: 0 5px;
+    background-color: #333;
+    height: 100%;
+    width: 10px;
+    display: inline-block;
+
+    -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+    animation: sk-stretchdelay 1.2s infinite ease-in-out;
+}
+
+.spinner .rect2 {
+    -webkit-animation-delay: -1.1s;
+    animation-delay: -1.1s;
+}
+
+.spinner .rect3 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+}
+
+.spinner .rect4 {
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+}
+
+.spinner .rect5 {
+    -webkit-animation-delay: -0.8s;
+    animation-delay: -0.8s;
+}
+
+@-webkit-keyframes sk-stretchdelay {
+    0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
+    20% { -webkit-transform: scaleY(1.0) }
+}
+
+@keyframes sk-stretchdelay {
+    0%, 40%, 100% {
+        transform: scaleY(0.4);
+        -webkit-transform: scaleY(0.4);
+    }  20% {
+           transform: scaleY(1.0);
+           -webkit-transform: scaleY(1.0);
+       }
+}

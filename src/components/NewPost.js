@@ -1,86 +1,115 @@
 import React, { Component } from "react";
-import { StyledForm, StyledButton, StyledInput } from "./StyledComponents";
-import { withRouter } from "react-router-dom";
+import { withRouter, Prompt } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
-import axios from "axios";
+import { fetchPost, createNewPost, editPost } from "../redux/actions/Action";
+import { StyledForm, StyledButton, StyledInput } from "./StyledComponents";
 
 class NewPost extends Component {
-  onInputChangeHandler = e => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
-  onChangeFileValue = e => {
-    if (e.target.files && e.target.files[0]) {
-      this.setState({
-        image: URL.createObjectURL(e.target.files[0])
-      });
-    }
-  };
-  onChangeSetDate = () => {
-    this.setState({ date: new Date().toLocaleDateString() });
-  };
-  onFormSubmit = e => {
-    e.preventDefault();
-    this.onChangeSetDate();
-    setTimeout(() => {
-      // this.postDaata(this.state);
-      this.props.createNewPost(this.state);
-      // this.props.history.push("/");
-    }, 300);
-  };
+	state = {
+		author: "",
+		title: "",
+		body: "",
+		image: "https://via.placeholder.com/250/000000/FFFFFF/?text=no text",
+		date: new Date().toLocaleString(),
+	};
 
-  postDaata = body => {
-    console.log(body);
-    axios
-      .post("https://simple-blog-api.crew.red/posts", body, {
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(response => console.log(response))
-      .catch(error => console.log(error));
-  };
+	isTextEdited = false;
 
-  render() {
-    return (
-      <div>
-        <StyledForm width={`400px`} onSubmit={this.onFormSubmit}>
-          <label htmlFor="author">
-            Enter author
-            <StyledInput
-              id="author"
-              name="author"
-              onChange={this.onInputChangeHandler}
-            />
-          </label>
-          <label htmlFor="title">
-            Enter title
-            <StyledInput
-              id="title"
-              name="title"
-              onChange={this.onInputChangeHandler}
-            />
-          </label>
-          <label htmlFor="body">
-            <textarea
-              name="body"
-              id="body"
-              onChange={this.onInputChangeHandler}
-              style={{ width: "98%", height: "100px" }}
-            />
-          </label>
-          <label htmlFor="image">
-            Add file
-            <input
-              accept="image/*"
-              type="file"
-              id="image"
-              name="image"
-              onChange={this.onChangeFileValue}
-            />
-          </label>
-          <StyledButton> Create </StyledButton>
-        </StyledForm>
-      </div>
-    );
-  }
+	componentDidMount() {
+		const { isEdit, fetchPost, match } = this.props;
+		if (isEdit) {
+			fetchPost(match.params.id);
+		}
+	}
+
+	componentDidUpdate(prevProps) {
+		const { history, postEdited, singlePost, postCreated } = this.props;
+		if (singlePost !== prevProps.singlePost) {
+			this.setState(singlePost);
+		}
+		if (postEdited) {
+			console.log("Post has been Edited");
+			history.push("/");
+		}
+		if (postCreated) {
+			console.log("Post has been Created");
+			history.push("/");
+		}
+	}
+
+	onInputChangeHandler = e => {
+		this.setState({ [e.target.name]: e.target.value });
+		this.isTextEdited = true;
+	};
+
+	onFormSubmit = e => {
+		const { isEdit, match, createNewPost, editPost } = this.props;
+		e.preventDefault();
+		this.isTextEdited = false;
+		!isEdit ? createNewPost(this.state) : editPost(this.state, match.params.id);
+	};
+
+	render() {
+		const { author, title, body, image } = this.state;
+		const { isEdit, history } = this.props;
+		return (
+			<div>
+				<Prompt when={this.isTextEdited} message={() => `You didn't store changes, really leave?`} />
+				<StyledForm width="400px" onSubmit={this.onFormSubmit}>
+					<label htmlFor="author">
+						Enter author
+						<StyledInput id="author" name="author" value={author} onChange={this.onInputChangeHandler} />
+					</label>
+					<label htmlFor="title">
+						Enter title
+						<StyledInput id="title" name="title" value={title} onChange={this.onInputChangeHandler} />
+					</label>
+					<label htmlFor="body">
+						Enter more text!
+						<textarea
+							name="body"
+							id="body"
+							value={body}
+							onChange={this.onInputChangeHandler}
+							style={{ width: "98%", height: "100px" }}
+						/>
+					</label>
+					<label htmlFor="image">
+						Add image link
+						<StyledInput type="text" id="image" name="image" value={image} onChange={this.onInputChangeHandler} />
+					</label>
+					<StyledButton type="submit" color="green">
+						{isEdit ? "Edit" : "Create"}
+					</StyledButton>
+					<StyledButton type="button" onClick={history.goBack}>
+						Return
+					</StyledButton>
+				</StyledForm>
+			</div>
+		);
+	}
 }
 
-export default withRouter(NewPost);
+const mapStateToProps = ({ singlePost, postEdited, postCreated }) => ({
+	singlePost,
+	postEdited,
+	postCreated,
+});
+const mapDispatchToProps = dispatcher =>
+	bindActionCreators(
+		{
+			fetchPost,
+			createNewPost,
+			editPost,
+		},
+		dispatcher
+	);
+
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(NewPost)
+);
